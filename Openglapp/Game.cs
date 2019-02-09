@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Openglapp.SampleObject;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -20,7 +21,7 @@ namespace OpenglApp
         //Then, we create two matrices to hold our view and projection. They're initialized at the bottom of OnLoad.
         //The view matrix is what you might consider the "camera". It represents the current viewport in the window.
         private readonly Camera _camera = new Camera(0, 0, 3);
-        private SampleSquare _object;
+        private IObject _object;
 
         //This represents how the vertices will be projected. It's hard to explain through comments,
         //so check out the web version for a good demonstration of what this does.
@@ -40,6 +41,7 @@ namespace OpenglApp
                 // var center = PointToScreen(new Point(Width / 2, Height / 2));
                 
                 _camera.RotationY += (ev.X - Width / 2) * 0.001f;
+                _camera.RotationX += (ev.Y - Height / 2) * 0.001f;
                 // Console.WriteLine($"{ev.X} {center.X} {Width / 2}");
             };
 
@@ -52,10 +54,11 @@ namespace OpenglApp
 
             //For the view, we don't do too much here. Next tutorial will be all about a Camera class that will make it much easier to manipulate the view.
             //For now, we move it backwards three units on the Z axis.
-            
+
             // Matrix4.CreatePerspectiveOffCenter(-1, 1, -1, 1, 0.1f, 5.0f, out _view);
 
-            _object = new SampleSquare();
+            // _object = new SampleSquare();
+            _object = new Sphere(10.0f);
             _object.Position = new Vector3(0.0f, 0.0f, -3.0f);
             _object.Init();
 

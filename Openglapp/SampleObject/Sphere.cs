@@ -1,39 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using OpenglApp;
 using OpenTK;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Input;
 
-namespace OpenglApp
+namespace Openglapp.SampleObject
 {
-    class SampleSquare
+    public class Sphere : IObject
     {
         public Vector3 Position { get; set; }
 
-        float[] _vertices =
-        {
-            //Position          Texture coordinates
-             0.5f,  0.5f, 0.5f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, 0.5f, 1.0f, 0.0f, // bottom right
-            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, // bottom left
-            -0.5f,  0.5f, 0.5f, 0.0f, 1.0f,  // top left 
+        float[] _vertices;
 
-            0.5f,  0.5f, -0.5f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // bottom right
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
-            -0.5f,  0.5f, -0.5f, 0.0f, 1.0f  // top left 
-        };
-
-        uint[] _indices =
-        {
-            0, 1, 3,
-            1, 2, 3,
-            4,5,7,
-            5,6,7,
-
-            0,1,4,
-            1,4,5
-        };
+        uint[] _indices;
 
 
         Shader _shader;
@@ -43,6 +22,90 @@ namespace OpenglApp
         int _elementBufferObject;
         int _vertexBufferObject;
         int _vertexArrayObject;
+
+        public Sphere(float radius)
+        {
+            List<float> data = new List<float>();
+            List<uint> indices = new List<uint>();
+
+            const uint layersNum = 100;
+            const uint segmentCount = 200;
+
+            for (uint height = 0; height <= layersNum; height++)
+            {
+                if (height == 0)
+                {
+                    data.AddRange(new[] {0.0f, radius, 0.0f, 0.0f, 0.0f});
+                }
+                else if (height == layersNum)
+                {
+                    data.AddRange(new[] {0.0f, -radius, 0.0f, 1.0f, 1.0f});
+                }
+                else
+                {
+                    var verticalAngle = MathHelper.DegreesToRadians(height * 180.0f / layersNum);
+                    var y = radius * Math.Cos(verticalAngle);
+
+                    var coef = Math.Sin(verticalAngle);
+
+                    
+
+                    for (uint segment = 0; segment < segmentCount; segment++)
+                    {
+                        var radAngle = MathHelper.DegreesToRadians(segment * 360.0f / segmentCount);
+
+                        var z = radius * Math.Sin(radAngle) * coef;
+                        var x = radius * Math.Cos(radAngle) * coef;
+
+                        data.AddRange(new[]
+                        {
+                            (float)x,
+                            (float)y,
+                            (float)z,
+                            0.5f,
+                            (float) (height % 2)
+                        });
+                    }
+                }
+            }
+
+            for (uint height = 0; height < layersNum; height++)
+            {
+                for (uint segment = 0; segment < segmentCount; segment++)
+                {
+                    if (height == 0)
+                    {
+                        indices.AddRange(new uint[] {0, segment + 1, (segment + 1) % segmentCount + 1});
+                    }
+                    else if (height == layersNum - 1)
+                    {
+                        indices.AddRange(new uint[]
+                        {
+                            (uint) data.Count / 5 - 1,
+                            1 + (height - 1) * segmentCount + segment,
+                            1 + (height - 1) * segmentCount + (segment + 1) % segmentCount
+                        });
+                    }
+                    else
+                    {
+                        indices.AddRange(new uint[]
+                        {
+                            1 + (height - 1) * segmentCount + segment,
+                            1 + (height - 1) * segmentCount + (segment + 1) % segmentCount,
+                            1 + height * segmentCount + segment,
+
+                            1 + (height - 1) * segmentCount + (segment + 1) % segmentCount,
+                            1 + (height) * segmentCount + segment,
+                            1 + (height) * segmentCount + (segment + 1) % segmentCount
+                        });
+                    }
+                }
+            }
+
+            _vertices = data.ToArray();
+
+            _indices = indices.ToArray();
+        }
 
         public void Init()
         {
@@ -114,5 +177,16 @@ namespace OpenglApp
             _texture.Dispose();
             _texture2.Dispose();
         }
+    }
+
+    public interface IObject
+    {
+        void Draw(Matrix4 view, Matrix4 projection, Matrix4 model);
+
+        void Init();
+
+
+        Vector3 Position { get; set; }
+        void Unload();
     }
 }

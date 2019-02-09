@@ -9,49 +9,46 @@ namespace OpenglApp
 {
     public class Shader: IDisposable
     {
-        int _handle;
+        readonly int _handle;
 
-        public Shader(string vertPath, string fragPath)
+        public Shader(string vertexShaderPath, string fragPath)
         {
-            int VertexShader;
-            int FragmentShader;
+            string vertexShaderSource = LoadSource(vertexShaderPath);
 
-            string VertexShaderSource = LoadSource(vertPath);
+            var vertexShader = GL.CreateShader(ShaderType.VertexShader);
 
-            VertexShader = GL.CreateShader(ShaderType.VertexShader);
+            GL.ShaderSource(vertexShader, vertexShaderSource);
 
-            GL.ShaderSource(VertexShader, VertexShaderSource);
+            GL.CompileShader(vertexShader);
 
-            GL.CompileShader(VertexShader);
+            string infoLogVert = GL.GetShaderInfoLog(vertexShader);
+            if (infoLogVert != string.Empty)
+                Console.WriteLine(infoLogVert);
 
-            string infoLogVert = GL.GetShaderInfoLog(VertexShader);
-            if (infoLogVert != System.String.Empty)
-                System.Console.WriteLine(infoLogVert);
-
-            string FragmentShaderSource = LoadSource(fragPath);
-            FragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(FragmentShader, FragmentShaderSource);
+            string fragmentShaderSource = LoadSource(fragPath);
+            var FragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+            GL.ShaderSource(FragmentShader, fragmentShaderSource);
             GL.CompileShader(FragmentShader);
 
-            string infoLogFrag = GL.GetShaderInfoLog(VertexShader);
+            string infoLogFrag = GL.GetShaderInfoLog(vertexShader);
             if (infoLogFrag != System.String.Empty)
                 System.Console.WriteLine(infoLogFrag);
 
             _handle = GL.CreateProgram();
 
-            GL.AttachShader(_handle, VertexShader);
+            GL.AttachShader(_handle, vertexShader);
             GL.AttachShader(_handle, FragmentShader);
 
             GL.LinkProgram(_handle);
 
-            string infoLogLink = GL.GetShaderInfoLog(VertexShader);
+            string infoLogLink = GL.GetShaderInfoLog(vertexShader);
             if (infoLogLink != System.String.Empty)
                 System.Console.WriteLine(infoLogLink);
 
-            GL.DetachShader(_handle, VertexShader);
+            GL.DetachShader(_handle, vertexShader);
             GL.DetachShader(_handle, FragmentShader);
             GL.DeleteShader(FragmentShader);
-            GL.DeleteShader(VertexShader);
+            GL.DeleteShader(vertexShader);
         }
 
 

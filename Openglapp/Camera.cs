@@ -24,11 +24,12 @@ namespace OpenglApp
 
         public void Move(float dX, float dY, float dZ)
         {
-            X = X + dX * (float)Math.Cos(RotationY) + dZ * (float)Math.Sin(RotationY);
-            Y += Y + dY;
-            Z = Z - dX * (float)Math.Sin(RotationY) + dZ * (float)Math.Cos(RotationY);
+            X = X + dX * (float)Math.Cos(RotationY) + dZ * (float)Math.Sin(RotationY) * (float)Math.Cos(RotationX);
+            Y = Y + dY + (float)Math.Sin(RotationX) * dZ;
+            Z = Z - dX * (float)Math.Sin(RotationY) + dZ * (float)Math.Cos(RotationY) * (float)Math.Cos(RotationX);
         }
 
-        public Matrix4 Matrix => Matrix4.CreateTranslation(-X, Y, Z) * Matrix4.CreateFromAxisAngle(Vector3.UnitY, RotationY);
+        public Matrix4 Matrix => Matrix4.CreateTranslation(-X, Y, Z) * Matrix4.CreateFromAxisAngle(Vector3.UnitY, RotationY) * Matrix4.CreateFromAxisAngle(Vector3.UnitX, RotationX);
+        public float RotationX { get; set; }
     }
 }
