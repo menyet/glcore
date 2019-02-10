@@ -57,8 +57,10 @@ namespace OpenglApp
 
             // Matrix4.CreatePerspectiveOffCenter(-1, 1, -1, 1, 0.1f, 5.0f, out _view);
 
-            // _object = new SampleSquare();
-            _object = new Sphere(10.0f);
+            //_object = new SampleSquare();
+
+            _object = new RoadSegment(1, 0.4f, 0.05f);
+            // _object = new Sphere(10.0f);
             _object.Position = new Vector3(0.0f, 0.0f, -3.0f);
             _object.Init();
 

@@ -62,10 +62,10 @@ namespace Openglapp.SampleObject
             _shader = new Shader("shader.vert", "shader.frag");
             _shader.Use();
 
-            _texture = new Texture("container.png");
+            _texture = new Texture("road_road_0021_01_tiled.png");
             _texture.Use(TextureUnit.Texture0);
 
-            _texture2 = new Texture("awesomeface.png");
+            _texture2 = new Texture("road_road_0021_01_tiled.png");
             _texture2.Use(TextureUnit.Texture1);
 
             _shader.SetInt("texture0", 0);
