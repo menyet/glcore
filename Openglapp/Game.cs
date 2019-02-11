@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Openglapp.SampleObject;
+using OpenglApp.SampleObject;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -41,7 +41,13 @@ namespace OpenglApp
                 // var center = PointToScreen(new Point(Width / 2, Height / 2));
                 
                 _camera.RotationY += (ev.X - Width / 2) * 0.001f;
+
                 _camera.RotationX += (ev.Y - Height / 2) * 0.001f;
+
+                if (_camera.RotationX < -3.0f / 2.0f) _camera.RotationX = -3.0f / 2.0f;
+
+                if (_camera.RotationX > 3.0f / 2.0f) _camera.RotationX = 3.0f / 2.0f;
+
                 // Console.WriteLine($"{ev.X} {center.X} {Width / 2}");
             };
 
@@ -111,7 +117,8 @@ namespace OpenglApp
                 Task.Run(() =>
                 {
                     Console.Clear();
-                    Console.WriteLine($"View rotation:      {_camera.RotationY}");
+                    Console.WriteLine($"View rotation X:      {_camera.RotationX}");
+                    Console.WriteLine($"View rotation Y:      {_camera.RotationY}");
                     Console.WriteLine($"View:               {_camera.X} {_camera.Y} {_camera.Z}");
                     Console.WriteLine($"Projection:         {(float)MathHelper.DegreesToRadians(_time)}");
                 });
@@ -130,8 +137,8 @@ namespace OpenglApp
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             // Nothing to do!
-            Point center = new Point(Width / 2, Height / 2);
-            Point mousePos = PointToScreen(center);
+            OpenTK.Point center = new OpenTK.Point(Width / 2, Height / 2);
+            OpenTK.Point mousePos = PointToScreen(center);
             OpenTK.Input.Mouse.SetPosition(mousePos.X, mousePos.Y);
 
             if (IsKeyPressed(Key.Escape))
