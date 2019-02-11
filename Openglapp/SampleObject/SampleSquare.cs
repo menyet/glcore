@@ -2,7 +2,7 @@
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Openglapp.SampleObject
+namespace OpenglApp.SampleObject
 {
     public class SampleSquare : IObject
     {

@@ -1,4 +1,4 @@
-﻿namespace Openglapp.SampleObject
+﻿namespace OpenglApp.SampleObject
 {
     using OpenglApp;
     using OpenTK;
