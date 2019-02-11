@@ -65,7 +65,11 @@ namespace OpenglApp
 
             //_object = new SampleSquare();
 
-            _object = new RoadSegment(1, 0.4f, 0.05f);
+            _object = new Street(new StreetEndConfig(), new StreetEndConfig()
+            {
+                Position = new Point(0.0f,0.0f,1.0f)
+            }, 1, 0.4f, 0.05f);
+            //_object = new RoadSegment(1, 0.4f, 0.05f);
             // _object = new Sphere(10.0f);
             _object.Position = new Vector3(0.0f, 0.0f, -3.0f);
             _object.Init();
@@ -103,10 +107,11 @@ namespace OpenglApp
             //We clear the depth buffer in addition to the color buffer
             // GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            
+
             //Finally, we have the model matrix. This determines the position of the model.
             Matrix4 model = Matrix4.Identity
-                  * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(_time / 2)) * Matrix4.CreateTranslation(_object.Position);
+                  * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(/*_time / 2*/0.0)) * Matrix4.CreateTranslation(_object.Position);
+
 
             _object.Draw(_camera.Matrix, _projection, model);
             

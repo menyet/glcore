@@ -5,6 +5,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
     <NullableReferenceTypes>true</NullableReferenceTypes>
+    <RootNamespace>OpenglApp</RootNamespace>
+    <AssemblyName>OpenglApp</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
