@@ -35,9 +35,12 @@ namespace OpenglApp.SampleObject
             var vertices = new List<float>();
             var indices = new List<uint>();
 
-            for (var x = 0; x < map.Width; x++)
+
+            //var map = new { Width = 5, Height = 4 };
+
+            for (var z = 0; z < map.Height; z++)
             {
-                for (var z = 0; z < map.Height; z++)
+                for (var x = 0; x < map.Width; x++)
                 {
                     var height = map.Data[(z * map.Width + x) * 4] / 50.0f;
 
