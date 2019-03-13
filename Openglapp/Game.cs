@@ -69,6 +69,11 @@ namespace OpenglApp
             {
                 Position = new Point(0.0f,0.0f,1.0f)
             }, 1, 0.4f, 0.05f);
+
+
+            _object = new Map();
+
+
             //_object = new RoadSegment(1, 0.4f, 0.05f);
             // _object = new Sphere(10.0f);
             _object.Position = new Vector3(0.0f, 0.0f, -3.0f);
