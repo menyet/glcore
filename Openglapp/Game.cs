@@ -67,11 +67,11 @@ namespace OpenglApp
 
             _object = new Street(new StreetEndConfig(), new StreetEndConfig()
             {
-                Position = new Point(0.0f,0.0f,1.0f)
+                Position = new Vector(0.0f,0.0f,1.0f)
             }, 1, 0.4f, 0.05f);
 
 
-            _object = new Map();
+//             _object = new Map();
 
 
             //_object = new RoadSegment(1, 0.4f, 0.05f);

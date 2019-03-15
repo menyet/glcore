@@ -85,7 +85,8 @@ namespace OpenglApp.SampleObject
             _shader = new Shader("shader.vert", "shader.frag");
             _shader.Use();
 
-            _texture = new Texture("road_road_0021_01_tiled.png");
+            //_texture = new Texture("road_road_0021_01_tiled.png");
+            _texture = new Texture("map.png");
             _texture.Use(TextureUnit.Texture0);
 
             _texture2 = new Texture("road_road_0021_01_tiled.png");

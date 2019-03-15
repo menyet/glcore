@@ -9,22 +9,6 @@ namespace OpenglApp.SampleObject
     using OpenTK;
     using OpenTK.Graphics.OpenGL4;
 
-    public class StreetEndConfig
-    {
-        public OpenglApp.Point Position { get; set; }
-    }
-
-    public struct Vertex<T>
-    {
-        public T X { get; set; }
-
-        public T Y { get; set; }
-        public T Z { get; set; }
-
-        public T U { get; set; }
-        public T V { get; set; }
-    }
-
     public class Street : IObject
     {
         public Vector3 Position { get; set; }
@@ -51,21 +35,32 @@ namespace OpenglApp.SampleObject
             var distance = Math.Sqrt(startConfig.Position.X.Square() + startConfig.Position.Y.Square() +
                                      startConfig.Position.Z.Square());
 
-            OpenglApp.Point direction = GetDirection(startConfig, endConfig);
+            Vector direction = GetDirection(startConfig, endConfig);
 
 
-            IEnumerable<float> GetLayer(OpenglApp.Point center, float textureV)
+            IEnumerable<float> GetLayer(Vector center, float textureV)
             {
-                var sidedirection = new OpenglApp.Point(direction.Z, direction.Y, -direction.X);
+                // var sidedirection = new Vector(direction.Z, direction.Y, -direction.X);
+                var sidedirection = new Vector(1.0f, 0.0f, 0.0f);
+                var upDirection = new Vector(0.0f, 1.0f, 0.0f);
+
+                var p1 = center - sidedirection * half + upDirection * sideWalkHeight;
+                var p2 = center - sidedirection * (half - sidewalkSize) + upDirection * sideWalkHeight;
+                var p3 = center - sidedirection * (half - sidewalkSize);
+
+                var p4 = center + sidedirection * (half - sidewalkSize);
+                var p5 = center + sidedirection * (half - sidewalkSize) + upDirection * sideWalkHeight;
+                var p6 = center + sidedirection * half + upDirection * sideWalkHeight;
 
                 return new[]
                 {
-                    center.X - sidedirection.X * half, center.Y + sideWalkHeight, center.Z, 0.0f, textureV, // bottom left
-                    center.X - sidedirection.X * (half + sidewalkSize), center.Y + sideWalkHeight, center.Z, 0.5f * sideWalkRatio, textureV, // top right
-                    center.X - sidedirection.X * (half + sidewalkSize), center.Y, center.Z, 0.25f, textureV, // top right
-                    center.X + sidedirection.X * (half - sidewalkSize), center.Y, center.Z, 0.75f, textureV, // top right
-                    center.X + sidedirection.X * (half - sidewalkSize), center.Y + sideWalkHeight, center.Z, 1.0f - 0.5f * sideWalkRatio, textureV, // top right
-                    center.X + sidedirection.X * half, center.Y + sideWalkHeight, center.Z, 1.0f, textureV, // bottom left
+                    //center.X - sidedirection.X * half, center.Y + sideWalkHeight, center.Z, 0.0f, textureV, // bottom left
+                    p1.X, p1.Y, p1.Z, 0.0f, textureV, // bottom left
+                    p2.X, p2.Y, p2.Z, 0.5f * sideWalkRatio, textureV, // top right
+                    p3.X, p3.Y, p3.Z, 0.25f, textureV, // top right
+                    p4.X, p4.Y, p4.Z, 0.75f, textureV, // top right
+                    p5.X, p5.Y, p5.Z, 1.0f - 0.5f * sideWalkRatio, textureV, // top right
+                    p6.X, p6.Y, p6.Z, 1.0f, textureV, // bottom left
                 };
             }
 
@@ -74,24 +69,6 @@ namespace OpenglApp.SampleObject
 
             _vertices = firstLayer
                 .Concat(secondLayer).ToArray();
-
-            var avertices=    new []
-            {
-                //Position          Texture coordinates
-                -half, sideWalkHeight, -half, 0.0f, 0.0f, // bottom left
-                -half + sidewalkSize, sideWalkHeight, -half, 0.5f * sideWalkRatio, 0.0f, // top right
-                -half + sidewalkSize, 0, -half, 0.25f, 0.0f, // top right
-                half - sidewalkSize, 0, -half, 0.75f, 0.0f, // top right
-                half - sidewalkSize, sideWalkHeight, -half, 1.0f - 0.5f * sideWalkRatio, 0.0f, // top right
-                half, sideWalkHeight, -half, 1.0f, 0.0f, // bottom left
-
-                -half, sideWalkHeight, half, 0.0f, 1.0f, // top left 
-                -half + sidewalkSize, sideWalkHeight, half, 0.5f * sideWalkRatio, 1.0f, // bottom right
-                -half + sidewalkSize, 0, half, 0.25f, 1.0f, // bottom right
-                half - sidewalkSize, 0, half, 0.75f, 1.0f, // bottom right
-                half - sidewalkSize, sideWalkHeight, half, 1.0f - 0.5f * sideWalkRatio, 1.0f, // bottom right
-                half, sideWalkHeight, half, 1.0f, 1.0f, // top left 
-            };
 
             _indices = new uint[]
             {
@@ -104,18 +81,22 @@ namespace OpenglApp.SampleObject
 
         }
 
-        private OpenglApp.Point GetDirection(StreetEndConfig startConfig, StreetEndConfig endConfig)
+        private Vector GetDirection(StreetEndConfig startConfig, StreetEndConfig endConfig)
         {
             var startPoint = startConfig.Position;
             var endPoint = endConfig.Position;
 
-            var dX = endPoint.X - startPoint.X;
-            var dY = endPoint.Y - startPoint.Y;
-            var dZ = endPoint.Z - startPoint.Z;
+            var v = endPoint - startPoint;
 
-            var coef = (float)(1.0f / Math.Sqrt(dX.Square() + dY.Square() + dZ.Square()));
+            return v / v.Size;
 
-            return new OpenglApp.Point(dX * coef, dY * coef, dZ * coef);
+            //var dX = endPoint.X - startPoint.X;
+            //var dY = endPoint.Y - startPoint.Y;
+            //var dZ = endPoint.Z - startPoint.Z;
+
+            //var coef = (float)(1.0f / Math.Sqrt(dX.Square() + dY.Square() + dZ.Square()));
+
+            //return new Vector(dX * coef, dY * coef, dZ * coef);
         }
 
         public void Init()
