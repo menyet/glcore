@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using OpenglApp.SampleObject;
 using OpenTK;
@@ -65,21 +66,32 @@ namespace OpenglApp
 
             //_object = new SampleSquare();
 
-            _object = new Street(new List<StreetEndConfig>() {
-                new StreetEndConfig(),
-                new StreetEndConfig()
+            //_object = new Street(new List<StreetEndConfig>() {
+            //    new StreetEndConfig(),
+            //    new StreetEndConfig()
+            //{
+            //    Position = new Vector(0.0f,0.0f,3.0f)
+            //},
+            //new StreetEndConfig()
+            //{
+            //    Position = new Vector(3.0f,0.0f,3.0f)
+            //},
+            //new StreetEndConfig()
+            //{
+            //    Position = new Vector(5.0f,0.5f,3.0f)
+            //}
+            //}, 1, 0.4f, 0.05f);
+
+            _object = new Street(Enumerable.Range(1, 50).Select(_ => new StreetEndConfig
             {
-                Position = new Vector(0.0f,0.0f,1.0f)
-            },
-            new StreetEndConfig()
-            {
-                Position = new Vector(0.5f,0.5f,2.0f)
-            },
-            new StreetEndConfig()
-            {
-                Position = new Vector(0.5f,0.5f,3.0f)
-            }
-            }, 1, 0.4f, 0.05f);
+                Position = new Vector
+                {
+                    X = (float)Math.Sin(_ / 10.0f) * 4.0f,
+                    Y = (float)Math.Sin(_ / 5.0),
+                    Z = (float)Math.Cos(_ / 10.0f) * 4.0f,
+
+                }
+            }).ToList(), 1, 0.4f, 0.05f);
 
 
             //             _object = new Map();
