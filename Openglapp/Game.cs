@@ -27,11 +27,30 @@ namespace OpenglApp
         //This represents how the vertices will be projected. It's hard to explain through comments,
         //so check out the web version for a good demonstration of what this does.
         Matrix4 _projection;
-
-
+        
         public Game(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
+        
+        private IEnumerable<Vector> Casteljau(List<Vector> points)
+        {
+            for (float t = 0; t <= 1; t += 0.01f)
+            {
+                yield return GetPoint(points.Count - 1, 0, t);
+            }
 
+            Vector GetPoint(int level, int i, float t)
+            {
+                if (level == 0)
+                {
+                    return points[i];
+                }
 
+                var p1 = GetPoint(level - 1, i, t);
+                var p2 = GetPoint(level - 1, i + 1, t);
+
+                return (1.0f - t) * p1 + t * p2;
+            }
+        }
+        
         protected override void OnLoad(EventArgs e)
         {
             Keyboard.KeyDown += (sender, ev) => _keyState[ev.Key] = true;
@@ -82,23 +101,24 @@ namespace OpenglApp
             //}
             //}, 1, 0.4f, 0.05f);
 
-            _object = new Street(Enumerable.Range(1, 50).Select(_ => new StreetEndConfig
-            {
-                Position = new Vector
-                {
-                    X = (float)Math.Sin(_ / 10.0f) * 4.0f,
-                    Y = (float)Math.Sin(_ / 5.0),
-                    Z = (float)Math.Cos(_ / 10.0f) * 4.0f,
 
-                }
+            var points = new List<Vector>
+            {
+                new Vector(0, 0, 0),
+                new Vector(0, 0, 3.0f),
+                new Vector(3.0f, 2.0f, 3.0f),
+                new Vector(4.0f, 2.0f, 3.0f),
+                new Vector(6.0f, 0.0f, 3.0f),
+                new Vector(6.0f, 0.0f, 0.0f)                
+            };
+
+            _object = new Street(Casteljau(points)
+            .Select(_ => new StreetEndConfig
+            {
+                Position = _
             }).ToList(), 1, 0.4f, 0.05f);
 
-
-            //             _object = new Map();
-
-
-            //_object = new RoadSegment(1, 0.4f, 0.05f);
-            // _object = new Sphere(10.0f);
+           
             _object.Position = new Vector3(0.0f, 0.0f, -3.0f);
             _object.Init();
 
