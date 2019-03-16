@@ -54,8 +54,8 @@ namespace OpenglApp.SampleObject
 
                 IEnumerable<float> GetLayer(Vector center, float textureV)
                 {
-                    // var sidedirection = new Vector(direction.Z, direction.Y, -direction.X);
-                    var sidedirection = new Vector(1.0f, 0.0f, 0.0f);
+                    var sidedirection = new Vector(direction.Z, 0, -direction.X);
+                    //var sidedirection = new Vector(1.0f, 0.0f, 0.0f);
                     var upDirection = new Vector(0.0f, 1.0f, 0.0f);
 
                     var p1 = center - sidedirection * half + upDirection * sideWalkHeight;
