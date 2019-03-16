@@ -58,5 +58,7 @@ namespace OpenglApp.SampleObject
         }
 
         public float Size => (float)Math.Sqrt(X.Square() + Y.Square() + Z.Square());
+
+        public Vector NormalizedVector => this / Size;
     }
 }

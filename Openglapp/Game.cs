@@ -65,13 +65,24 @@ namespace OpenglApp
 
             //_object = new SampleSquare();
 
-            _object = new Street(new StreetEndConfig(), new StreetEndConfig()
+            _object = new Street(new List<StreetEndConfig>() {
+                new StreetEndConfig(),
+                new StreetEndConfig()
             {
                 Position = new Vector(0.0f,0.0f,1.0f)
+            },
+            new StreetEndConfig()
+            {
+                Position = new Vector(0.5f,0.5f,2.0f)
+            },
+            new StreetEndConfig()
+            {
+                Position = new Vector(0.5f,0.5f,3.0f)
+            }
             }, 1, 0.4f, 0.05f);
 
 
-//             _object = new Map();
+            //             _object = new Map();
 
 
             //_object = new RoadSegment(1, 0.4f, 0.05f);

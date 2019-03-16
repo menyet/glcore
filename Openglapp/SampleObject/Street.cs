@@ -27,33 +27,47 @@ namespace OpenglApp.SampleObject
         // private IEnumerable<float> GetLayer()
 
 
-        public Street(StreetEndConfig startConfig, StreetEndConfig endConfig, float size, float sideWalkRatio, float sideWalkHeight)
+        public Street(List<StreetEndConfig> configs, float size, float sideWalkRatio, float sideWalkHeight)
         {
             var half = size / 2.0f;
             var sidewalkSize = half * sideWalkRatio;
 
-            var distance = Math.Sqrt(startConfig.Position.X.Square() + startConfig.Position.Y.Square() +
-                                     startConfig.Position.Z.Square());
+            var vertices = new List<float>();
 
-            Vector direction = GetDirection(startConfig, endConfig);
+            for (var i = 0; i < configs.Count; i++) {
 
 
-            IEnumerable<float> GetLayer(Vector center, float textureV)
-            {
-                // var sidedirection = new Vector(direction.Z, direction.Y, -direction.X);
-                var sidedirection = new Vector(1.0f, 0.0f, 0.0f);
-                var upDirection = new Vector(0.0f, 1.0f, 0.0f);
+                Vector direction;
 
-                var p1 = center - sidedirection * half + upDirection * sideWalkHeight;
-                var p2 = center - sidedirection * (half - sidewalkSize) + upDirection * sideWalkHeight;
-                var p3 = center - sidedirection * (half - sidewalkSize);
-
-                var p4 = center + sidedirection * (half - sidewalkSize);
-                var p5 = center + sidedirection * (half - sidewalkSize) + upDirection * sideWalkHeight;
-                var p6 = center + sidedirection * half + upDirection * sideWalkHeight;
-
-                return new[]
+                if (i == 0)
                 {
+                    direction = (configs[1].Position - configs[0].Position).NormalizedVector;
+                }
+                else if (i == configs.Count - 1)
+                {
+                    direction = (configs[i].Position - configs[i - 1].Position).NormalizedVector;
+                }
+                else
+                {
+                    direction = (configs[i + 1].Position - configs[i - 1].Position).NormalizedVector;
+                }
+
+                IEnumerable<float> GetLayer(Vector center, float textureV)
+                {
+                    // var sidedirection = new Vector(direction.Z, direction.Y, -direction.X);
+                    var sidedirection = new Vector(1.0f, 0.0f, 0.0f);
+                    var upDirection = new Vector(0.0f, 1.0f, 0.0f);
+
+                    var p1 = center - sidedirection * half + upDirection * sideWalkHeight;
+                    var p2 = center - sidedirection * (half - sidewalkSize) + upDirection * sideWalkHeight;
+                    var p3 = center - sidedirection * (half - sidewalkSize);
+
+                    var p4 = center + sidedirection * (half - sidewalkSize);
+                    var p5 = center + sidedirection * (half - sidewalkSize) + upDirection * sideWalkHeight;
+                    var p6 = center + sidedirection * half + upDirection * sideWalkHeight;
+
+                    return new[]
+                    {
                     //center.X - sidedirection.X * half, center.Y + sideWalkHeight, center.Z, 0.0f, textureV, // bottom left
                     p1.X, p1.Y, p1.Z, 0.0f, textureV, // bottom left
                     p2.X, p2.Y, p2.Z, 0.5f * sideWalkRatio, textureV, // top right
@@ -62,41 +76,33 @@ namespace OpenglApp.SampleObject
                     p5.X, p5.Y, p5.Z, 1.0f - 0.5f * sideWalkRatio, textureV, // top right
                     p6.X, p6.Y, p6.Z, 1.0f, textureV, // bottom left
                 };
+                }
+
+                var firstLayer = GetLayer(configs[i].Position, i % 2);
+
+
+                vertices.AddRange(firstLayer);
             }
 
-            var firstLayer = GetLayer(startConfig.Position, 0.0f);
-            var secondLayer = GetLayer(endConfig.Position, 1.0f);
+            _vertices = vertices.ToArray();
 
-            _vertices = firstLayer
-                .Concat(secondLayer).ToArray();
-
-            _indices = new uint[]
-            {
+            var rawIndices = new uint[]
+                {
                 0, 6, 7, 0, 7, 1,
                 1, 7, 8, 1, 8, 2,
                 2, 8, 9, 2, 9, 3,
                 3, 9, 10, 3, 10, 4,
                 4, 10, 11, 4, 11, 5
-            };
+                };
+            var indices = new List<uint>();
 
-        }
+            for (uint i = 0; i < configs.Count - 1; i++)
+            {
+                indices.AddRange(rawIndices.Select(_ => _ + 6 * i));
 
-        private Vector GetDirection(StreetEndConfig startConfig, StreetEndConfig endConfig)
-        {
-            var startPoint = startConfig.Position;
-            var endPoint = endConfig.Position;
+            }
 
-            var v = endPoint - startPoint;
-
-            return v / v.Size;
-
-            //var dX = endPoint.X - startPoint.X;
-            //var dY = endPoint.Y - startPoint.Y;
-            //var dZ = endPoint.Z - startPoint.Z;
-
-            //var coef = (float)(1.0f / Math.Sqrt(dX.Square() + dY.Square() + dZ.Square()));
-
-            //return new Vector(dX * coef, dY * coef, dZ * coef);
+            _indices = indices.ToArray();
         }
 
         public void Init()
