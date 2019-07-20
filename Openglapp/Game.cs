@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Openglapp;
 using OpenglApp.SampleObject;
 using OpenTK;
 using OpenTK.Graphics;
@@ -22,7 +23,7 @@ namespace OpenglApp
         //Then, we create two matrices to hold our view and projection. They're initialized at the bottom of OnLoad.
         //The view matrix is what you might consider the "camera". It represents the current viewport in the window.
         private readonly Camera _camera = new Camera(0, 0, 3);
-        private IObject _object;
+        private List<IObject> _objectList = new List<IObject>();
 
         //This represents how the vertices will be projected. It's hard to explain through comments,
         //so check out the web version for a good demonstration of what this does.
@@ -30,26 +31,7 @@ namespace OpenglApp
         
         public Game(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
         
-        private IEnumerable<Vector> Casteljau(List<Vector> points)
-        {
-            for (float t = 0; t <= 1; t += 0.01f)
-            {
-                yield return GetPoint(points.Count - 1, 0, t);
-            }
-
-            Vector GetPoint(int level, int i, float t)
-            {
-                if (level == 0)
-                {
-                    return points[i];
-                }
-
-                var p1 = GetPoint(level - 1, i, t);
-                var p2 = GetPoint(level - 1, i + 1, t);
-
-                return (1.0f - t) * p1 + t * p2;
-            }
-        }
+       
         
         protected override void OnLoad(EventArgs e)
         {
@@ -102,25 +84,10 @@ namespace OpenglApp
             //}, 1, 0.4f, 0.05f);
 
 
-            var points = new List<Vector>
+            foreach (var obj in new ObjectLoader().LoadObjects())
             {
-                new Vector(0, 0, 0),
-                new Vector(0, 0, 3.0f),
-                new Vector(3.0f, 2.0f, 3.0f),
-                new Vector(4.0f, 2.0f, 3.0f),
-                new Vector(6.0f, 0.0f, 3.0f),
-                new Vector(6.0f, 0.0f, 0.0f)                
-            };
-
-            _object = new Street(Casteljau(points)
-            .Select(_ => new StreetEndConfig
-            {
-                Position = _
-            }).ToList(), 1, 0.4f, 0.05f);
-
-           
-            _object.Position = new Vector3(0.0f, 0.0f, -3.0f);
-            _object.Init();
+                _objectList.Add(obj);
+            }
 
             //For the matrix, we use a few parameters.
             //  Field of view. This determines how much the viewport can see at once. 45 is considered the most "realistic" setting, but most video games nowadays use 90
@@ -135,6 +102,8 @@ namespace OpenglApp
 
             base.OnLoad(e);
         }
+
+        
 
         private readonly IDictionary<Key, bool> _keyState = new Dictionary<Key, bool>();
 
@@ -157,11 +126,13 @@ namespace OpenglApp
 
 
             //Finally, we have the model matrix. This determines the position of the model.
-            Matrix4 model = Matrix4.Identity
-                  * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(/*_time / 2*/0.0)) * Matrix4.CreateTranslation(_object.Position);
+            foreach (var obj in _objectList)
+            {
+                Matrix4 model = Matrix4.Identity
+                      * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(/*_time / 2*/0.0)) * Matrix4.CreateTranslation(obj.Position);
 
-
-            _object.Draw(_camera.Matrix, _projection, model);
+                obj.Draw(_camera.Matrix, _projection, model);
+            }
             
             Context.SwapBuffers();
 
@@ -232,33 +203,33 @@ namespace OpenglApp
                 _camera.Move(0, 0, -speed * (float)e.Time);
             }
 
-            if (IsKeyPressed(Key.Up))
-            {
-                var p = _object.Position;
-                p.Z -= speed * (float)e.Time;
-                _object.Position = p;
-            }
+            // if (IsKeyPressed(Key.Up))
+            // {
+            //     var p = _object.Position;
+            //     p.Z -= speed * (float)e.Time;
+            //     _object.Position = p;
+            // }
 
-            if (IsKeyPressed(Key.Down))
-            {
-                var p = _object.Position;
-                p.Z += speed * (float)e.Time;
-                _object.Position = p;
-            }
+            // if (IsKeyPressed(Key.Down))
+            // {
+            //     var p = _object.Position;
+            //     p.Z += speed * (float)e.Time;
+            //     _object.Position = p;
+            // }
 
-            if (IsKeyPressed(Key.Left))
-            {
-                var p = _object.Position;
-                p.X -= speed * (float)e.Time;
-                _object.Position = p;
-            }
+            // if (IsKeyPressed(Key.Left))
+            // {
+            //     var p = _object.Position;
+            //     p.X -= speed * (float)e.Time;
+            //     _object.Position = p;
+            // }
 
-            if (IsKeyPressed(Key.Right))
-            {
-                var p = _object.Position;
-                p.X += speed * (float)e.Time;
-                _object.Position = p;
-            }
+            // if (IsKeyPressed(Key.Right))
+            // {
+            //     var p = _object.Position;
+            //     p.X += speed * (float)e.Time;
+            //     _object.Position = p;
+            // }
 
             base.OnUpdateFrame(e);
         }
@@ -277,7 +248,10 @@ namespace OpenglApp
             GL.BindVertexArray(0);
             GL.UseProgram(0);
 
-            _object.Unload();
+            foreach (var obj in _objectList)
+            {
+                obj.Unload();
+            }
 
             base.OnUnload(e);
         }
