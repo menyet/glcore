@@ -70,6 +70,11 @@ namespace OpenglApp
             //Obviously, we don't want this, so we enable depth testing. We also clear the depth buffer in GL.Clear over in OnRenderFrame.
             GL.Enable(EnableCap.DepthTest);
 
+            var m = new OsMap();
+            m.Init();
+
+            _objectList.Add(m);
+
             //For the view, we don't do too much here. Next tutorial will be all about a Camera class that will make it much easier to manipulate the view.
             //For now, we move it backwards three units on the Z axis.
 
