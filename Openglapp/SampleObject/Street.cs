@@ -1,13 +1,13 @@
-﻿using System;
+﻿using OpenglApp;
+using OpenglApp.Utils;
+using OpenToolkit.Graphics.OpenGL4;
+using OpenToolkit.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenglApp.Utils;
 
 namespace OpenglApp.SampleObject
 {
-    using OpenglApp;
-    using OpenTK;
-    using OpenTK.Graphics.OpenGL4;
 
     public class Street : IObject
     {

@@ -11,11 +11,14 @@ namespace OpenglApp.Imageutils
     {
         public static (int Width, int Height, byte[] Data) GetImage(string path)
         {
-            Image<Rgba32> image = Image.Load(path);
-
+            Image<Rgba32> image = Image.Load<Rgba32>(path);
+            
+            
             image.Mutate(x => x.Flip(FlipMode.Vertical));
 
-            Rgba32[] tempPixels = image.GetPixelSpan().ToArray();
+            image.TryGetSinglePixelSpan(out var tempPixels);
+
+             //Rgba32[] tempPixels = image.GetPixelSpan().ToArray();
 
             List<byte> pixels = new List<byte>();
 

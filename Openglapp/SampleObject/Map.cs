@@ -1,14 +1,10 @@
-﻿using System;
+﻿using OpenglApp.Imageutils;
+using OpenToolkit.Graphics.OpenGL4;
+using OpenToolkit.Mathematics;
 using System.Collections.Generic;
-using System.Linq;
-using OpenglApp.Utils;
 
 namespace OpenglApp.SampleObject
 {
-    using OpenglApp;
-    using OpenglApp.Imageutils;
-    using OpenTK;
-    using OpenTK.Graphics.OpenGL4;
 
     public class Map : IObject
     {

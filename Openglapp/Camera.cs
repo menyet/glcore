@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenTK;
+using OpenToolkit.Mathematics;
 
 namespace OpenglApp
 {

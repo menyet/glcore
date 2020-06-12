@@ -4,18 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Openglapp;
 using OpenglApp.SampleObject;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Input;
+using OpenToolkit.Graphics.OpenGL4;
+using OpenToolkit.Mathematics;
+using OpenToolkit.Windowing.Common;
+using OpenToolkit.Windowing.Common.Input;
+using OpenToolkit.Windowing.Desktop;
 
 namespace OpenglApp
 {
     //This is where all OpenGL code will be written.
     //OpenTK allows for several functions to be overriden to extend functionality; this is how we'll be writing code.
     class Game : GameWindow
-    {       
-
+    {
+        private int Width { get; set; }
+        private int Height { get; set; }
 
         //We create a double to hold how long has passed since the program was opened.
         double _time;
@@ -28,17 +30,25 @@ namespace OpenglApp
         //This represents how the vertices will be projected. It's hard to explain through comments,
         //so check out the web version for a good demonstration of what this does.
         Matrix4 _projection;
-        
-        public Game(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
-        
-       
-        
-        protected override void OnLoad(EventArgs e)
-        {
-            Keyboard.KeyDown += (sender, ev) => _keyState[ev.Key] = true;
-            Keyboard.KeyUp += (sender, ev) => _keyState[ev.Key] = false;
 
-            Mouse.Move += (sender, ev) =>
+        public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings()
+        {
+            Size = new Vector2i(width, height),
+            Title = title
+        })
+        {
+            Width = width;
+            Height = height;
+        }
+
+
+        protected override void OnLoad()
+        {
+
+            KeyDown += (ev) => _keyState[ev.Key] = true;
+            KeyUp += (ev) => _keyState[ev.Key] = false;
+            
+            MouseMove += (ev) =>
             {
                 // var center = PointToScreen(new Point(Width / 2, Height / 2));
                 
@@ -100,7 +110,7 @@ namespace OpenglApp
 
             //Now, head over to OnRenderFrame to see how we setup the model matrix
 
-            base.OnLoad(e);
+            base.OnLoad();
         }
 
         
@@ -133,8 +143,8 @@ namespace OpenglApp
 
                 obj.Draw(_camera.Matrix, _projection, model);
             }
-            
-            Context.SwapBuffers();
+
+            SwapBuffers();
 
             if (_frame++ % 10 == 0)
             {
@@ -161,13 +171,14 @@ namespace OpenglApp
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             // Nothing to do!
-            OpenTK.Point center = new OpenTK.Point(Width / 2, Height / 2);
-            OpenTK.Point mousePos = PointToScreen(center);
-            OpenTK.Input.Mouse.SetPosition(mousePos.X, mousePos.Y);
+            var center = new Vector2i(Width / 2, Height / 2);
+            var mousePos = PointToScreen(center);
+
+            MousePosition = new Vector2(mousePos.X, mousePos.Y);
 
             if (IsKeyPressed(Key.Escape))
             {
-                Exit();
+                Close();
             }
 
             const float speed = 2.3f;
@@ -234,15 +245,13 @@ namespace OpenglApp
             base.OnUpdateFrame(e);
         }
 
-
-        protected override void OnResize(EventArgs e)
+        protected override void OnResize(ResizeEventArgs e)
         {
             GL.Viewport(0, 0, Width, Height);
             base.OnResize(e);
         }
 
-
-        protected override void OnUnload(EventArgs e)
+        protected override void OnUnload()
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);
@@ -253,7 +262,7 @@ namespace OpenglApp
                 obj.Unload();
             }
 
-            base.OnUnload(e);
+            base.OnUnload();
         }
     }
 }

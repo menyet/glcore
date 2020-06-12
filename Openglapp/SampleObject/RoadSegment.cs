@@ -1,9 +1,8 @@
-﻿namespace OpenglApp.SampleObject
-{
-    using OpenglApp;
-    using OpenTK;
-    using OpenTK.Graphics.OpenGL4;
+﻿using OpenToolkit.Graphics.OpenGL4;
+using OpenToolkit.Mathematics;
 
+namespace OpenglApp.SampleObject
+{
     public class RoadSegment : IObject
     {
         public Vector3 Position { get; set; }

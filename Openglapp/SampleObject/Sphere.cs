@@ -1,8 +1,7 @@
-﻿using System;
+﻿using OpenToolkit.Graphics.OpenGL4;
+using OpenToolkit.Mathematics;
+using System;
 using System.Collections.Generic;
-using OpenglApp;
-using OpenTK;
-using OpenTK.Graphics.OpenGL4;
 
 namespace OpenglApp.SampleObject
 {
