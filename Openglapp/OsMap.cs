@@ -1,19 +1,12 @@
-﻿
+using OpenglApp.Imageutils;
+using OpenglApp.OSM;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using OpenglApp.OSM;
-using OpenglApp.Utils;
-using OpenTK.Graphics.OpenGL;
 
 namespace OpenglApp.SampleObject
 {
-    using OpenglApp;
-    using OpenglApp.Imageutils;
-    using OpenTK;
-    using OpenTK.Graphics.OpenGL4;
-
     public static class Ext {
         public static void Ad<T>(this IList<T> list,  params T[] items)
         {

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Openglapp;
 using OpenglApp.SampleObject;
 using OpenTK.Graphics.OpenGL4;
