@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Openglapp;
 using OpenglApp.SampleObject;
-using OpenToolkit.Graphics.OpenGL4;
-using OpenToolkit.Mathematics;
-using OpenToolkit.Windowing.Common;
-using OpenToolkit.Windowing.Common.Input;
-using OpenToolkit.Windowing.Desktop;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace OpenglApp
 {
@@ -44,7 +44,7 @@ namespace OpenglApp
 
         protected override void OnLoad()
         {
-
+            
             KeyDown += (ev) => _keyState[ev.Key] = true;
             KeyUp += (ev) => _keyState[ev.Key] = false;
             
@@ -115,7 +115,7 @@ namespace OpenglApp
 
         
 
-        private readonly IDictionary<Key, bool> _keyState = new Dictionary<Key, bool>();
+        private readonly IDictionary<Keys, bool> _keyState = new Dictionary<Keys, bool>();
 
 
         int _frame = 0;
@@ -162,7 +162,7 @@ namespace OpenglApp
             base.OnRenderFrame(e);
         }
 
-        private bool IsKeyPressed(Key key)
+        private bool IsKeyPressed(Keys key)
         {
             return _keyState.TryGetValue(key, out var s) && s;
         }
@@ -176,40 +176,40 @@ namespace OpenglApp
 
             MousePosition = new Vector2(mousePos.X, mousePos.Y);
 
-            if (IsKeyPressed(Key.Escape))
+            if (IsKeyPressed(Keys.Escape))
             {
                 Close();
             }
 
             const float speed = 2.3f;
 
-            if (IsKeyPressed(Key.Q))
+            if (IsKeyPressed(Keys.Q))
             {
                 _camera.RotationY -= speed * 0.02f;
             }
 
-            if (IsKeyPressed(Key.E))
+            if (IsKeyPressed(Keys.E))
             {
                 _camera.RotationY += speed * 0.02f;
             }
 
 
-            if (IsKeyPressed(Key.A))
+            if (IsKeyPressed(Keys.A))
             {
                 _camera.Move(-speed * (float) e.Time, 0, 0);
             }
 
-            if (IsKeyPressed(Key.D))
+            if (IsKeyPressed(Keys.D))
             {
                 _camera.Move(speed * (float)e.Time, 0, 0);
             }
 
-            if (IsKeyPressed(Key.W))
+            if (IsKeyPressed(Keys.W))
             {
                 _camera.Move(0, 0, speed * (float) e.Time);
             }
 
-            if (IsKeyPressed(Key.S))
+            if (IsKeyPressed(Keys.S))
             {
                 _camera.Move(0, 0, -speed * (float)e.Time);
             }

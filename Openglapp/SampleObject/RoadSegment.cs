@@ -1,5 +1,5 @@
-﻿using OpenToolkit.Graphics.OpenGL4;
-using OpenToolkit.Mathematics;
+﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace OpenglApp.SampleObject
 {

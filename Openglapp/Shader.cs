@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using OpenToolkit.Graphics.OpenGL4;
-using OpenToolkit.Mathematics;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace OpenglApp
 {

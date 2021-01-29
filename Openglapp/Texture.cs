@@ -1,6 +1,6 @@
 ﻿using System;
 using OpenglApp.Imageutils;
-using OpenToolkit.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL4;
 
 namespace OpenglApp
 {
