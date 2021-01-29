@@ -46,20 +46,18 @@ namespace OpenglApp
             KeyDown += (ev) => _keyState[ev.Key] = true;
             KeyUp += (ev) => _keyState[ev.Key] = false;
             
-            MouseMove += (ev) =>
-            {
-                // var center = PointToScreen(new Point(Width / 2, Height / 2));
+            //MouseMove += (ev) =>
+            //{
+            //    // var center = PointToScreen(new Point(Width / 2, Height / 2));
                 
-                _camera.RotationY += (ev.X - Width / 2) * 0.001f;
+            //    _camera.RotationY += (ev.X - Width / 2) * 0.00001f;
 
-                _camera.RotationX += (ev.Y - Height / 2) * 0.001f;
+            //    _camera.RotationX += (ev.Y - Height / 2) * 0.00001f;
 
-                if (_camera.RotationX < -3.0f / 2.0f) _camera.RotationX = -3.0f / 2.0f;
+            //    if (_camera.RotationX < -3.0f / 2.0f) _camera.RotationX = -3.0f / 2.0f;
 
-                if (_camera.RotationX > 3.0f / 2.0f) _camera.RotationX = 3.0f / 2.0f;
-
-                // Console.WriteLine($"{ev.X} {center.X} {Width / 2}");
-            };
+            //    if (_camera.RotationX > 3.0f / 2.0f) _camera.RotationX = 3.0f / 2.0f;
+            //};
 
             
 
@@ -122,6 +120,7 @@ namespace OpenglApp
 
 
         int _frame = 0;
+        private MouseState _oldState;
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
@@ -149,18 +148,14 @@ namespace OpenglApp
 
             SwapBuffers();
 
-            if (_frame++ % 10 == 0)
-            {
-                Task.Run(() =>
-                {
-                    Console.Clear();
-                    Console.WriteLine($"View rotation X:      {_camera.RotationX}");
-                    Console.WriteLine($"View rotation Y:      {_camera.RotationY}");
-                    Console.WriteLine($"View:               {_camera.X} {_camera.Y} {_camera.Z}");
-                    Console.WriteLine($"Projection:         {(float)MathHelper.DegreesToRadians(_time)}");
-                });
-            }
-
+            //if (_frame++ % 1000 == 0)
+            //{
+            //        Console.Clear();
+            //        Console.WriteLine($"View rotation X:      {_camera.RotationX}");
+            //        Console.WriteLine($"View rotation Y:      {_camera.RotationY}");
+            //        Console.WriteLine($"View:               {_camera.X} {_camera.Y} {_camera.Z}");
+            //        Console.WriteLine($"Projection:         {(float)MathHelper.DegreesToRadians(_time)}");
+            //}
 
             base.OnRenderFrame(e);
         }
@@ -170,14 +165,40 @@ namespace OpenglApp
             return _keyState.TryGetValue(key, out var s) && s;
         }
 
+        private void HandleMouse()
+        {
+            var newState = MouseState;
+
+
+
+            
+            //var mousePos = PointToScreen(new Vector2i((int)MousePosition.X, (int)MousePosition.Y));
+
+            //var center = PointToScreen(new Vector2i(Width / 2, Height / 2));
+            var center = new Vector2(Width / 2, Height / 2);
+
+            var dX = newState.X - _oldState.X;
+            var dY = newState.Y - _oldState.Y;
+            //var dX = MousePosition.X - center.X;
+            //var dY = MousePosition.Y - center.Y;
+
+            _camera.RotationY += (dX) * 0.001f;
+            _camera.RotationX += (dY) * 0.001f;
+
+            if (_camera.RotationX < -3.0f / 2.0f) _camera.RotationX = -3.0f / 2.0f;
+
+            if (_camera.RotationX > 3.0f / 2.0f) _camera.RotationX = 3.0f / 2.0f;
+
+            //MousePosition = center;
+
+            _oldState = newState;
+        }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             // Nothing to do!
-            var center = new Vector2i(Width / 2, Height / 2);
-            var mousePos = PointToScreen(center);
 
-            MousePosition = new Vector2(mousePos.X, mousePos.Y);
+            HandleMouse();
 
             if (IsKeyPressed(Keys.Escape))
             {
@@ -196,6 +217,15 @@ namespace OpenglApp
                 _camera.RotationY += speed * 0.02f;
             }
 
+            if (IsKeyPressed(Key.I))
+            {
+                _camera.RotationX -= speed * 0.02f;
+            }
+
+            if (IsKeyPressed(Keys.K))
+            {
+                _camera.RotationX += speed * 0.02f;
+            }
 
             if (IsKeyPressed(Keys.A))
             {
