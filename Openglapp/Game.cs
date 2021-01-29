@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using Openglapp;
 using OpenglApp.SampleObject;
 using OpenTK.Graphics.OpenGL4;
@@ -28,6 +30,7 @@ namespace OpenglApp
         //This represents how the vertices will be projected. It's hard to explain through comments,
         //so check out the web version for a good demonstration of what this does.
         Matrix4 _projection;
+        Stopwatch _watch = new Stopwatch();
 
         public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings()
         {
@@ -37,12 +40,18 @@ namespace OpenglApp
         {
             Width = width;
             Height = height;
+            _watch.Start();
         }
 
 
         protected override void OnLoad()
         {
-            
+            Console.Clear();
+            Console.WriteLine($"View rotation X:");
+            Console.WriteLine($"View rotation Y:");
+            Console.WriteLine($"View:");
+            Console.WriteLine($"FPS:");
+
             KeyDown += (ev) => _keyState[ev.Key] = true;
             KeyUp += (ev) => _keyState[ev.Key] = false;
             
@@ -119,13 +128,12 @@ namespace OpenglApp
         private readonly IDictionary<Keys, bool> _keyState = new Dictionary<Keys, bool>();
 
 
-        int _frame = 0;
-        private MouseState _oldState;
+        long _frame = 0;
+        private long _lastTime = 0;
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             //_viewZ = (float)Math.Sin(_time / 100);
-
 
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -148,14 +156,21 @@ namespace OpenglApp
 
             SwapBuffers();
 
-            //if (_frame++ % 1000 == 0)
-            //{
-            //        Console.Clear();
-            //        Console.WriteLine($"View rotation X:      {_camera.RotationX}");
-            //        Console.WriteLine($"View rotation Y:      {_camera.RotationY}");
-            //        Console.WriteLine($"View:               {_camera.X} {_camera.Y} {_camera.Z}");
-            //        Console.WriteLine($"Projection:         {(float)MathHelper.DegreesToRadians(_time)}");
-            //}
+            if (_frame++ % 25 == 0)
+            {
+                var time = _watch.ElapsedMilliseconds;
+                var fps = 25000 / (double) (time - _lastTime);
+                _lastTime = time;
+
+                Console.SetCursorPosition(20, 0);
+                Console.Write($"{_camera.RotationX}");
+                Console.SetCursorPosition(20, 1);
+                Console.Write($"{_camera.RotationY}");
+                Console.SetCursorPosition(20, 2);
+                Console.Write($"{_camera.X} {_camera.Y} {_camera.Z}");
+                Console.SetCursorPosition(20, 3);
+                Console.Write($"{fps}");
+            }
 
             base.OnRenderFrame(e);
         }
@@ -165,33 +180,32 @@ namespace OpenglApp
             return _keyState.TryGetValue(key, out var s) && s;
         }
 
+        private bool _firstPass = true;
+
         private void HandleMouse()
         {
-            var newState = MouseState;
-
-
-
-            
-            //var mousePos = PointToScreen(new Vector2i((int)MousePosition.X, (int)MousePosition.Y));
-
-            //var center = PointToScreen(new Vector2i(Width / 2, Height / 2));
             var center = new Vector2(Width / 2, Height / 2);
 
-            var dX = newState.X - _oldState.X;
-            var dY = newState.Y - _oldState.Y;
-            //var dX = MousePosition.X - center.X;
-            //var dY = MousePosition.Y - center.Y;
+            if (!_firstPass)
+            {
+                var dX = MouseState.X - center.X;
+                var dY = MouseState.Y - center.Y;
 
-            _camera.RotationY += (dX) * 0.001f;
-            _camera.RotationX += (dY) * 0.001f;
+                _camera.RotationY += (dX) * 0.01f;
+                _camera.RotationX += (dY) * 0.01f;
 
-            if (_camera.RotationX < -3.0f / 2.0f) _camera.RotationX = -3.0f / 2.0f;
+                if (_camera.RotationX < -3.0f / 2.0f) _camera.RotationX = -3.0f / 2.0f;
+                if (_camera.RotationX > 3.0f / 2.0f) _camera.RotationX = 3.0f / 2.0f;
+            }
+            else
+            {
+                _firstPass = false;
+            }
 
-            if (_camera.RotationX > 3.0f / 2.0f) _camera.RotationX = 3.0f / 2.0f;
+            Console.SetCursorPosition(20, 4);
+            Console.Write($"{MouseState.X} {MouseState.PreviousX} {MouseState.Delta.X}               ");
 
-            //MousePosition = center;
-
-            _oldState = newState;
+            MousePosition = center;
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
