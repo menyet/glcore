@@ -1,6 +1,6 @@
-using OpenglApp.Imageutils;
+﻿using OpenglApp.Imageutils;
 using OpenglApp.OSM;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -38,14 +38,14 @@ namespace OpenglApp.SampleObject
 
         public OsMap()
         {
-            OsmLoader.Load(@"Resources/map.osm", out var nodes, out var ways);
+            OsmLoader.Load(@"Resources/map.osm", out var nodes, out var ways, out var buildings);
 
 
             var map = ImageUtil.GetImage("Resources/map.png");
 
             foreach (var n in nodes)
             {
-                n.Value.lat = n.Value.lat - 48.0928479;
+                n.Value.lat = -(n.Value.lat - 48.0928479);
                 n.Value.lon = n.Value.lon - 17.1170996;
             }
 
@@ -54,7 +54,7 @@ namespace OpenglApp.SampleObject
             var vertices = new List<float>();
             var indices = new List<uint>();
 
-            var squareSize = 0.1f;
+            var squareSize = 0.05f;
             var scale = 2000.0f;
 
             uint ind = 0;

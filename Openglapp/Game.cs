@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Openglapp;
+using OpenglApp.OSM;
 using OpenglApp.SampleObject;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -35,6 +36,7 @@ namespace OpenglApp
             Title = title
         })
         {
+            CursorGrabbed = true;
             Width = width;
             Height = height;
         }
@@ -66,7 +68,12 @@ namespace OpenglApp
             //Obviously, we don't want this, so we enable depth testing. We also clear the depth buffer in GL.Clear over in OnRenderFrame.
             GL.Enable(EnableCap.DepthTest);
 
-            var m = new OsMap();
+            OsmLoader.Load(@"Resources/map.osm", out var nodes, out var ways, out var buildings);
+
+            var m = new OsMap(nodes, ways);
+
+            var buildings = ObjectBuilder.CreateBuildings(nodes, buildings);
+
             m.Init();
 
             _objectList.Add(m);
@@ -227,7 +234,9 @@ namespace OpenglApp
                 _camera.RotationX += speed * 0.02f;
             }
 
+
             if (IsKeyPressed(Keys.A))
+            if (IsKeyPressed(Key.A))
             {
                 _camera.Move(-speed * (float) e.Time, 0, 0);
             }
