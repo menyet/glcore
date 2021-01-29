@@ -217,7 +217,7 @@ namespace OpenglApp
                 _camera.RotationY += speed * 0.02f;
             }
 
-            if (IsKeyPressed(Key.I))
+            if (IsKeyPressed(Keys.I))
             {
                 _camera.RotationX -= speed * 0.02f;
             }
