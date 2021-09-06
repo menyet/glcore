@@ -6,11 +6,11 @@ namespace OpenglApp
 {
     public class Texture : IDisposable
     {
-        int _handle;
+        public int Handle { get; }
 
         public Texture(string path)
         {
-            _handle = GL.GenTexture();
+            Handle = GL.GenTexture();
             Use();
 
             var image = ImageUtil.GetImage(path);
@@ -29,7 +29,7 @@ namespace OpenglApp
         public void Use(TextureUnit unit = TextureUnit.Texture0)
         {
             GL.ActiveTexture(unit);
-            GL.BindTexture(TextureTarget.Texture2D, _handle);
+            GL.BindTexture(TextureTarget.Texture2D, Handle);
         }
 
         private bool _disposedValue = false;
@@ -43,7 +43,7 @@ namespace OpenglApp
                     // TODO: dispose managed state (managed objects).
                 }
 
-                GL.DeleteProgram(_handle);
+                GL.DeleteProgram(Handle);
 
                 _disposedValue = true;
             }
@@ -51,7 +51,7 @@ namespace OpenglApp
 
         ~Texture()
         {
-            GL.DeleteProgram(_handle);
+            GL.DeleteProgram(Handle);
         }
 
 

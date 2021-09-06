@@ -17,4 +17,16 @@
     <ProjectReference Include="..\Openglapp.Imageutils\Openglapp.Imageutils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\bluesky.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\map.osm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\map.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

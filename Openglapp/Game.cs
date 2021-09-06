@@ -43,6 +43,7 @@ namespace OpenglApp
             _watch.Start();
         }
 
+        private IObject _skybox;
 
         protected override void OnLoad()
         {
@@ -52,24 +53,10 @@ namespace OpenglApp
             Console.WriteLine($"View:");
             Console.WriteLine($"FPS:");
 
+
             KeyDown += (ev) => _keyState[ev.Key] = true;
             KeyUp += (ev) => _keyState[ev.Key] = false;
             
-            //MouseMove += (ev) =>
-            //{
-            //    // var center = PointToScreen(new Point(Width / 2, Height / 2));
-                
-            //    _camera.RotationY += (ev.X - Width / 2) * 0.00001f;
-
-            //    _camera.RotationX += (ev.Y - Height / 2) * 0.00001f;
-
-            //    if (_camera.RotationX < -3.0f / 2.0f) _camera.RotationX = -3.0f / 2.0f;
-
-            //    if (_camera.RotationX > 3.0f / 2.0f) _camera.RotationX = 3.0f / 2.0f;
-            //};
-
-            
-
             //We enable depth testing here. If you try to draw something more complex than one plane without this,
             //you'll notice that polygons further in the background will occasionally be drawn over the top of the ones in the foreground.
             //Obviously, we don't want this, so we enable depth testing. We also clear the depth buffer in GL.Clear over in OnRenderFrame.
@@ -77,8 +64,17 @@ namespace OpenglApp
 
             var m = new OsMap();
             m.Init();
-
             _objectList.Add(m);
+
+            _skybox = new Sphere(2);
+            _skybox.Init();
+            //_objectList.Add(_skybox);
+
+
+            //var c = new SampleSquare();
+            //c.Init();
+            //_objectList.Add(c);
+
 
             //For the view, we don't do too much here. Next tutorial will be all about a Camera class that will make it much easier to manipulate the view.
             //For now, we move it backwards three units on the Z axis.
@@ -104,10 +100,10 @@ namespace OpenglApp
             //}, 1, 0.4f, 0.05f);
 
 
-            foreach (var obj in new ObjectLoader().LoadObjects())
-            {
-                _objectList.Add(obj);
-            }
+            //foreach (var obj in new ObjectLoader().LoadObjects())
+            //{
+            //    _objectList.Add(obj);
+            //}
 
             //For the matrix, we use a few parameters.
             //  Field of view. This determines how much the viewport can see at once. 45 is considered the most "realistic" setting, but most video games nowadays use 90
@@ -143,6 +139,8 @@ namespace OpenglApp
 
             //We clear the depth buffer in addition to the color buffer
             // GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            _skybox.Position = (_camera.X, _camera.Y, _camera.Z);
 
 
             //Finally, we have the model matrix. This determines the position of the model.
